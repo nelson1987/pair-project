@@ -1,0 +1,6 @@
+@Athena.Api_HostAddress = http://localhost:5005
+
+GET {{Athena.Api_HostAddress}}/funcionarios/
+Accept: application/json
+
+###
