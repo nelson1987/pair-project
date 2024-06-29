@@ -1,20 +1,28 @@
+using AspNetCore.Scalar;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSwaggerGen();
 // Add services to the container. Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+//builder.Services.AddOpenApi();
 
 var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseScalar(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.UseTheme(Theme.Default);
+    options.RoutePrefix = "api-docs";
+});
+//app.MapOpenApi();
+// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.MapScalarApiReference();
+//}
 
 app.UseHttpsRedirection();
 
