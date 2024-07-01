@@ -199,7 +199,7 @@ public class PersonRequestDescriptor : AbstractDescriptor<PersonRequest>
 {
     public PersonRequestDescriptor()
     {
-        DescribeFor(x => x.FirstName).WithName("The first name of the person");
+        DescribeFor(x => x.Description).WithName("The first name of the person");
     }
 }
 
