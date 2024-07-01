@@ -1,4 +1,4 @@
-using AspNetCore.Scalar;
+﻿using AspNetCore.Scalar;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 
@@ -44,7 +44,20 @@ app.MapGet("/weatherforecast", (string? email) =>
     return forecast;
 })
 .WithName("GetWeatherForecast")
+//.AddResponseExample(200, typeof(string))
+
 .WithOpenApi(GenerateOperation());
+
+app.Run();
+
+//public static class OpenApiExtensions
+//{
+//    public static TBuilder AddResponseExample<TBuilder>(this TBuilder builder, Func<OpenApiOperation, OpenApiOperation> configureOperation, int statusCode, Type type)
+//        where TBuilder : IEndpointConventionBuilder
+//    {
+//        return builder;
+//    }
+//}
 
 static Func<OpenApiOperation, OpenApiOperation> GenerateOperation()
 {
@@ -52,22 +65,45 @@ static Func<OpenApiOperation, OpenApiOperation> GenerateOperation()
     {
         // Summary
         operation.Summary = "Endpoint used to fetch users";
+        operation.Description = "This is a description";
 
         // Parameters
         var parameter = operation.Parameters[0];
-        parameter.Description = "The user e-mail. It will filter the users by using this value";
+        parameter.Description = "The user e-mail.It will filter the users by using this value";
         parameter.Required = false;
         parameter.AllowEmptyValue = true;
         parameter.Examples = new Dictionary<string, OpenApiExample>()
         {
-            { "talles.valiatt@tallesvaliatti.com", new OpenApiExample { Value = new OpenApiString("talles.valiatt@tallesvaliatti.com"),Description = "It will filter users who have their email as 'talles.valatt@tallesvaliatti.com'" } },
-            { "talles", new OpenApiExample { Value = new OpenApiString("talles"),Description = "It will filter users if their email contains the word 'talles'" } }
+            {
+                "talles.valiatt@tallesvaliatti.com",
+                new OpenApiExample {
+                    Value = new OpenApiString("talles.valiatt@tallesvaliatti.com"),
+                Description = "It will filter users who have their email as 'talles.valatt@tallesvaliatti.com'" } },
+            {
+             "talles", new OpenApiExample { Value = new OpenApiString("talles"),
+                 Description = "It will filter users if their email contains the word 'talles'" } }
+        };
+
+        operation.Responses = new OpenApiResponses
+        {
+            ["200"] = new OpenApiResponse
+            {
+                Description = "Resultado da conversão (com valores em Celsius e Kelvin)",
+            },
+            ["400"] = new OpenApiResponse
+            {
+                Description = "Temperatura em Fahrenheit inválida"
+            },
+            //["200"] = new OpenApiResponse { Description = "Success" } ,
+            //["400"] = new OpenApiResponse { Description = "Bad Request" },
+            ["500"] = new OpenApiResponse
+            {
+                Description = "Internal Server Error"
+            }
         };
         return operation;
     };
 }
-app.Run();
-
 internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
